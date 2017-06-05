@@ -17,12 +17,12 @@ def readSerial():
 			
 			p1scores[0]+=1
 			p1totalInt += 1
-			p1round1.config(text = str(p1scores[0]))
+			p1rounds[0].config(text = str(p1scores[0]))
 			p1total.config(text = str(p1totalInt))
         if c == '2':
 			p1scores[0]+=2
 			p1totalInt += 2
-			p1round1.config(text = str(p1scores[0]))
+			p1rounds[0].config(text = str(p1scores[0]))
 			p1total.config(text = str(p1totalInt))
     root.after(10, readSerial)
 							
@@ -41,20 +41,12 @@ round5 = Label(root, text = "Final",padx = 10).grid(row = 0, column = 6)
 #Player1
 player1 = Label(root, text="Player1").grid(row = 1)
 
-p1round1 = Label(root, text = "0")
-p1round1.grid(row = 1, column = 1)
-
-p1round2 = Label(root, text = "0")
-p1round2.grid(row = 1, column = 2)
-
-p1round3 = Label(root, text = "0")
-p1round3.grid(row = 1, column = 3)
-
-p1round4 = Label(root, text = "0")
-p1round4.grid(row = 1, column = 4)
-
-p1round5 = Label(root, text = "0")
-p1round5.grid(row = 1, column = 5)
+#Create player 1 rounds
+p1rounds = []
+for x in range(0,5):
+    p1rounds.append(Label(root, text = "0"))
+    p1rounds[x].grid(row = 1, column = x+1)
+    print "creating rounds" + str(x)
 
 p1total = Label(root, text = "0")
 p1total.grid(row = 1, column = 6)
@@ -62,23 +54,16 @@ p1total.grid(row = 1, column = 6)
 #Player2
 player2 = Label(root, text="Player2").grid(row = 2)
 
-p1round2 = Label(root, text = "0")
-p1round2.grid(row = 2, column = 1)
-
-p2round2 = Label(root, text = "0")
-p2round2.grid(row = 2, column = 2)
-
-p3round3 = Label(root, text = "0")
-p3round3.grid(row = 2, column = 3)
-
-p4round4 = Label(root, text = "0")
-p4round4.grid(row = 2, column = 4)
-
-p5round5 = Label(root, text = "0")
-p5round5.grid(row = 2, column = 5)
+#Creater Player 2 rounds
+p2rounds = []
+for x in range(0,5):
+    p2rounds.append(Label(root, text = "0"))
+    p2rounds[x].grid(row = 2, column = x+1)
+    print "creating rounds" + str(x)
 
 p2total = Label(root, text = "0")
 p2total.grid(row = 2, column = 6)
+
 
 #close function
 close_button = Button(root, text="Close", command=root.quit).grid(row = 3)
