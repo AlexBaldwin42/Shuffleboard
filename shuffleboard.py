@@ -5,9 +5,7 @@ from array import *
 
 def readSerial():
     while True:
-        print "trying to read"
         c = ser.read()
-        print c
         global p1scores
         global p1totalInt
         if len(c) == 0:
@@ -32,37 +30,33 @@ root = Tk()
 
 root.title("Shuffle Board")
 gameTitle = Label(root, text = "Shuffle Board").grid(row = 0)
-round1 = Label(root, text = "Round 1",padx = 10).grid(row = 0, column = 1)
-round2 = Label(root, text = "Round 2",padx = 10).grid(row = 0, column = 2)
-round3 = Label(root, text = "Round 3",padx = 10).grid(row = 0, column = 3)
-round4 = Label(root, text = "Round 4",padx = 10).grid(row = 0, column = 4)
-round5 = Label(root, text = "Round 5",padx = 10).grid(row = 0, column = 5)
 round5 = Label(root, text = "Final",padx = 10).grid(row = 0, column = 6)
+
 #Player1
 player1 = Label(root, text="Player1").grid(row = 1)
-
-#Create player 1 rounds
-p1rounds = []
-for x in range(0,5):
-    p1rounds.append(Label(root, text = "0"))
-    p1rounds[x].grid(row = 1, column = x+1)
-    print "creating rounds" + str(x)
-
 p1total = Label(root, text = "0")
 p1total.grid(row = 1, column = 6)
 
 #Player2
 player2 = Label(root, text="Player2").grid(row = 2)
+p2total = Label(root, text = "0")
+p2total.grid(row = 2, column = 6)
 
-#Creater Player 2 rounds
+#Create player 1 and 2 rounds
+p1rounds = []
 p2rounds = []
+rounds = []
 for x in range(0,5):
+    #round labels
+    rounds.append(Label(root, text = "Round " + str(x+1),padx = 10))
+    rounds[x].grid(row = 0, column = x+1)
+    #p1
+    p1rounds.append(Label(root, text = "0"))
+    p1rounds[x].grid(row = 1, column = x+1)
+    #p2
     p2rounds.append(Label(root, text = "0"))
     p2rounds[x].grid(row = 2, column = x+1)
     print "creating rounds" + str(x)
-
-p2total = Label(root, text = "0")
-p2total.grid(row = 2, column = 6)
 
 
 #close function
@@ -73,7 +67,6 @@ serialPort = '/dev/ttyUSB0'
 baudRate = 9600
 ser = serial.Serial(serialPort, baudRate,timeout = 0, writeTimeout = 0)
  
-
 round = 0
 throwcount = 0
 player1Turn = True
