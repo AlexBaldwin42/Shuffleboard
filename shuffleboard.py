@@ -1,27 +1,99 @@
 from Tkinter import Tk, Label, Button
 import serial
+from time import sleep
 from array import *
 
-
+#1 is a shot
+#2 is a score
 def readSerial():
     while True:
         c = ser.read()
         global p1scores
         global p1totalInt
+        global p2scores
+        global p2totalInt
+        global round
+        global throwCount
+        global player1Turn
+        global player2Turn
+        global player1
+        global player2
+        
         if len(c) == 0:
             break
+        #a puck has been shot
         if c == "1":
-			print "in c ==1"
-			
-			p1scores[0]+=1
-			p1totalInt += 1
-			p1rounds[0].config(text = str(p1scores[0]))
-			p1total.config(text = str(p1totalInt))
-        if c == '2':
-			p1scores[0]+=2
-			p1totalInt += 2
-			p1rounds[0].config(text = str(p1scores[0]))
-			p1total.config(text = str(p1totalInt))
+            print "Shot made"
+            throwCount += 1
+            sleep(.5)
+            c = ser.read()
+            if c == '1':
+                c = ser.read()
+            if c == '1':
+                c = ser.read()
+            if c == '1':
+                c = ser.read()
+            if len(c)==0 or c == '1':
+                #shot has been missed
+                print "Missed shot"
+                #Check if players turn is over
+                if throwCount > 4:
+                    throwCount = 0
+                    print 'players turn is over'
+                #Players turn is over Switch players
+                #TODO check if game is over
+                    if player1Turn:
+                        player1Turn = False
+                        player2Turn = True
+                        player1.config(bg = 'light grey')
+                        player2.config(bg = 'red')
+                    else:
+                        player1Turn = True
+                        player2Turn = False
+                        player1.config(bg = 'red')
+                        player2.config(bg = 'light grey')
+                        round += 1
+                        rounds[round].config(bg = 'red')
+                        rounds[round-1].config(bg = 'light grey')
+                break
+            
+            #shot has been made find how many points to add to player
+            if c == '2':
+                if player1Turn:
+                    p1scores[round] += 1
+                    p1rounds[round].config(text = str(p1scores[round]))
+                                       
+                    p1totalInt += 1
+                    p1total.config(text = str(p1totalInt))
+
+                #Player2 made a point    
+                else:
+                    p2scores[round] += 1
+                    p2rounds[round].config(text = str(p2scores[round]))
+                                       
+                    p2totalInt += 1
+                    p2total.config(text = str(p2totalInt))
+                #Check if players turn is over
+                if throwCount > 4:
+                    throwCount = 0
+                    print 'players turn is over'
+                    #Players turn is over Switch players
+                    #TODO check if game is over
+                    
+                    if player1Turn:
+                        player1Turn = False
+                        player2Turn = True
+                        player1.config(bg = 'light grey')
+                        player2.config(bg = 'red')
+                        
+                    else:
+                        player1Turn = True
+                        player2Turn = False
+                        player1.config(bg = 'red')
+                        player2.config(bg = 'light grey')
+                        round += 1
+                        rounds[round].config(bg = 'red')
+                        rounds[round-1].config(bg = 'light grey')
     root.after(10, readSerial)
 							
 
@@ -33,12 +105,14 @@ gameTitle = Label(root, text = "Shuffle Board").grid(row = 0)
 round5 = Label(root, text = "Final",padx = 10).grid(row = 0, column = 6)
 
 #Player1
-player1 = Label(root, text="Player1").grid(row = 1)
+player1 = Label(root, text="Player1", bg = 'red')
+player1.grid(row = 1)
 p1total = Label(root, text = "0")
 p1total.grid(row = 1, column = 6)
 
 #Player2
-player2 = Label(root, text="Player2").grid(row = 2)
+player2 = Label(root, text="Player2")
+player2.grid(row = 2)
 p2total = Label(root, text = "0")
 p2total.grid(row = 2, column = 6)
 
@@ -57,7 +131,7 @@ for x in range(0,5):
     p2rounds.append(Label(root, text = "0"))
     p2rounds[x].grid(row = 2, column = x+1)
     print "creating rounds" + str(x)
-
+rounds[0].config(bg = 'red')
 
 #close function
 close_button = Button(root, text="Close", command=root.quit).grid(row = 3)
@@ -68,7 +142,7 @@ baudRate = 9600
 ser = serial.Serial(serialPort, baudRate,timeout = 0, writeTimeout = 0)
  
 round = 0
-throwcount = 0
+throwCount = 0
 player1Turn = True
 player2Turn = False
 
