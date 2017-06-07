@@ -1,4 +1,5 @@
 from Tkinter import Tk, Label, Button
+import tkFont
 import serial
 from time import sleep
 from array import *
@@ -96,8 +97,11 @@ def readSerial():
 
 
 root = Tk()
-
 root.title("Shuffle Board")
+defaultFont = tkFont.nametofont("TkDefaultFont")
+defaultFont.configure(size=15)
+root.option_add("*Font", defaultFont)
+
 gameTitle = Label(root, text = "Shuffle Board").grid(row = 0)
 round5 = Label(root, text = "Final",padx = 10).grid(row = 0, column = 6)
 
