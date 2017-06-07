@@ -7,7 +7,6 @@ from array import *
 #2 is a score
 def readSerial():
     while True:
-        c = ser.read()
         global p1scores
         global p1totalInt
         global p2scores
@@ -18,82 +17,80 @@ def readSerial():
         global player2Turn
         global player1
         global player2
+        global shotsCounter
         
+        c = ser.read()
         if len(c) == 0:
             break
         #a puck has been shot
         if c == "1":
             print "Shot made"
             throwCount += 1
-            sleep(.5)
-            c = ser.read()
-            if c == '1':
-                c = ser.read()
-            if c == '1':
-                c = ser.read()
-            if c == '1':
-                c = ser.read()
-            if len(c)==0 or c == '1':
-                #shot has been missed
-                print "Missed shot"
-                #Check if players turn is over
-                if throwCount > 4:
-                    throwCount = 0
-                    print 'players turn is over'
+            shotsCounter.config(text = str(throwCount) + '/5')
+            print 'throwCount = ' + str(throwCount)
+            #shot has been missed
+            print "Missed shot"
+            #Check if players turn is over
+            if throwCount > 4:
+                throwCount = 0
+                shotsCounter.config(text = str(throwCount) + '/5')
+                print 'players turn is over'
+            #Players turn is over Switch players
+            #TODO check if game is over
+                if player1Turn:
+                    player1Turn = False
+                    player2Turn = True
+                    player1.config(bg = 'light grey')
+                    player2.config(bg = 'red')
+                else:
+                    player1Turn = True
+                    player2Turn = False
+                    player1.config(bg = 'red')
+                    player2.config(bg = 'light grey')
+                    round += 1
+                    rounds[round].config(bg = 'red')
+                    rounds[round-1].config(bg = 'light grey')
+ 
+            
+        #shot has been made find how many points to add to player
+        if c == '2':
+            print 'player has scored'
+            
+            if player1Turn:
+                p1scores[round] += 1
+                p1rounds[round].config(text = str(p1scores[round]))
+                                   
+                p1totalInt += 1
+                p1total.config(text = str(p1totalInt))
+
+            #Player2 made a point    
+            else:
+                p2scores[round] += 1
+                p2rounds[round].config(text = str(p2scores[round]))
+                                   
+                p2totalInt += 1
+                p2total.config(text = str(p2totalInt))
+            #Check if players turn is over
+            if throwCount > 4:
+                throwCount = 0
+                print 'players turn is over'
                 #Players turn is over Switch players
                 #TODO check if game is over
-                    if player1Turn:
-                        player1Turn = False
-                        player2Turn = True
-                        player1.config(bg = 'light grey')
-                        player2.config(bg = 'red')
-                    else:
-                        player1Turn = True
-                        player2Turn = False
-                        player1.config(bg = 'red')
-                        player2.config(bg = 'light grey')
-                        round += 1
-                        rounds[round].config(bg = 'red')
-                        rounds[round-1].config(bg = 'light grey')
-                break
-            
-            #shot has been made find how many points to add to player
-            if c == '2':
+                
                 if player1Turn:
-                    p1scores[round] += 1
-                    p1rounds[round].config(text = str(p1scores[round]))
-                                       
-                    p1totalInt += 1
-                    p1total.config(text = str(p1totalInt))
-
-                #Player2 made a point    
-                else:
-                    p2scores[round] += 1
-                    p2rounds[round].config(text = str(p2scores[round]))
-                                       
-                    p2totalInt += 1
-                    p2total.config(text = str(p2totalInt))
-                #Check if players turn is over
-                if throwCount > 4:
-                    throwCount = 0
-                    print 'players turn is over'
-                    #Players turn is over Switch players
-                    #TODO check if game is over
+                    player1Turn = False
+                    player2Turn = True
+                    player1.config(bg = 'light grey')
+                    player2.config(bg = 'red')
                     
-                    if player1Turn:
-                        player1Turn = False
-                        player2Turn = True
-                        player1.config(bg = 'light grey')
-                        player2.config(bg = 'red')
-                        
-                    else:
-                        player1Turn = True
-                        player2Turn = False
-                        player1.config(bg = 'red')
-                        player2.config(bg = 'light grey')
-                        round += 1
-                        rounds[round].config(bg = 'red')
-                        rounds[round-1].config(bg = 'light grey')
+                else:
+                    player1Turn = True
+                    player2Turn = False
+                    player1.config(bg = 'red')
+                    player2.config(bg = 'light grey')
+                    round += 1
+                    rounds[round].config(bg = 'red')
+                    rounds[round-1].config(bg = 'light grey')
     root.after(10, readSerial)
 							
 
@@ -133,8 +130,14 @@ for x in range(0,5):
     print "creating rounds" + str(x)
 rounds[0].config(bg = 'red')
 
+#label to show how many shots have been taken
+shotsLabel = Label(root, text = "Shots Taken")
+shotsLabel.grid(row = 3, column = 0)
+shotsCounter = Label(root, text = "0/5")
+shotsCounter.grid(row = 3, column = 1)
+
 #close function
-close_button = Button(root, text="Close", command=root.quit).grid(row = 3)
+close_button = Button(root, text="Close", command=root.quit).grid(row = 3,column = 6)
 
 #serial init
 serialPort = '/dev/ttyUSB0'
@@ -145,6 +148,7 @@ round = 0
 throwCount = 0
 player1Turn = True
 player2Turn = False
+
 
 p1scores = array('i',[0,0,0,0,0])
 p2scores = array('i',[0,0,0,0,0])
