@@ -54,22 +54,31 @@ def readSerial():
  
             
         #shot has been made find how many points to add to player
-        if c == '2':
+        if c != '1':
             print 'player has scored'
+            if c == '2':
+                shotScore = 3
+            if c == '3':
+                shotScore = 5
+            if c == '4':
+                shotScore = 6
+            if c == '5':
+                shotScore = 4
             
+
             if player1Turn:
-                p1scores[round] += 1
+                p1scores[round] += shotScore
                 p1rounds[round].config(text = str(p1scores[round]))
                                    
-                p1totalInt += 1
+                p1totalInt += shotScore
                 p1total.config(text = str(p1totalInt))
 
             #Player2 made a point    
             else:
-                p2scores[round] += 1
+                p2scores[round] += shotScore
                 p2rounds[round].config(text = str(p2scores[round]))
                                    
-                p2totalInt += 1
+                p2totalInt += shotScore
                 p2total.config(text = str(p2totalInt))
             #Check if players turn is over
             if throwCount > 4:
